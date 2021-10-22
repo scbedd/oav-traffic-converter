@@ -1,7 +1,7 @@
 import {Argv} from "yargs";
 
 function convert(directory: string, outDirectory: string) {
-    console.info(`Converting files in folder ${directory}`);
+    console.info(`Converting files in folder ${directory} ${outDirectory}`);
 }
 
 require('yargs')

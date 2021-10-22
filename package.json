@@ -5,6 +5,7 @@
   "main": "./build/cli.js",
   "scripts": {
     "build": "tsc -p .",
+    "watched-build": "tsc -p . --watch",
     "test": ""
   },
   "repository": {
