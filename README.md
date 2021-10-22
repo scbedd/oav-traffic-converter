@@ -6,7 +6,7 @@ Along the way, answer the questions:
 
 1. Does it help, or hurt us to output our recordings in this new format?
 2. If we were go to the converter route, how fast is it?
-   1. At scale, we need to be able to consume and convert a large amount of recordings files. For context, `storage` has X recordings at time of writing.
+   1. At scale, we need to be able to consume and convert a large amount of recordings files. For context, `storage` has 1313 recordings at time of writing.
 
 ## Sample Invocation
 
