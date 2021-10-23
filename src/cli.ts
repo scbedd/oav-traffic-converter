@@ -8,6 +8,24 @@ var CompletionCount: number = 0;
 var InputDirectory: string = "";
 var OutputDirectory: string = "";
 
+interface LiveRequest {
+    body: any;
+    method: string;
+    url: string;
+    headers: any;
+}
+
+interface LiveResponse {
+    body: any;
+    statusCode: string;
+    headers: any;
+}
+
+interface ValidationPayload {
+    liveRequest: LiveRequest;
+    liveResponse: LiveResponse;
+}
+
 function convert(directory: string, outDirectory: string) {
     console.info(`Converting files in folder ${directory} ${outDirectory}`);
     InputDirectory = directory;
@@ -17,35 +35,40 @@ function convert(directory: string, outDirectory: string) {
     OperationCount = files.length;
 
     files.forEach((file: string) => {
-        read_file(file);
+        readFile(file);
     });
 }
 
 // async callbacks go
 // convert (directories) 
-//    -> each directory -> read_file -> process_file 
-//        -> each entry output_file
+//    -> each directory -> readFile -> processFile 
+//        -> each entry outputFile
 
-function read_file(file: string){
+function processFile(file: string, inputJson: any) {
+    const filePrefix = file.substring(0, file.lastIndexOf("."));
+
+    inputJson.Entries.forEach((entry: any, idx: number) => {
+        let outFile = filePrefix + idx + ".json";
+        outputFile(outFile, entry);
+    });
+}
+
+function readFile(file: string){
     const input_location = path.join(InputDirectory, file);
 
     fs.readFile(input_location, 'utf8', (err: any, data: any) => {
         if (err) {
             throw err;
         }
-        process_file(file, JSON.parse(data));
+        processFile(file, JSON.parse(data));
     });
 }
 
-function process_file(file: string, inputJson: any) {
-    output_file(file, inputJson);
-}
-
-function output_file(file: string, outputJson: any){
+function outputFile(file: string, outputJson: ValidationPayload){
     const data = JSON.stringify(outputJson, null, 4);
-    const output_location = path.join(OutputDirectory, file);
+    const outputLocation = path.join(OutputDirectory, file);
 
-    fs.writeFile(output_location, data, (err: any) => {
+    fs.writeFile(outputLocation, data, (err: any) => {
         if (err) {
             throw err;
         }

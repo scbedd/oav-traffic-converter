@@ -10,6 +10,8 @@ Along the way, answer the questions:
 
 All discussions WRT compatibility with [`oav` ](https://github.com/Azure/oav/) should be in context of the **live validation mode**.
 
+**This converter does not handle non-json files. It 100% assumes valid json input.**
+
 ## Local Sample Invocation
 
 ```node
