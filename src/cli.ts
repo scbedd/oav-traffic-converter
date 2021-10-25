@@ -7,6 +7,21 @@ var OperationCount: number = 0;
 var CompletionCount: number = 0;
 var InputDirectory: string = "";
 var OutputDirectory: string = "";
+var CONTENT_TYPE_KEY: string = "Content-Type"
+
+interface ProxyPayload {
+    RequestUri: string;
+    RequestMethod: string;
+    RequestHeaders: {};
+    RequestBody: string;
+    ResponseHeaders: {};
+    ResponseBody: {};
+    StatusCode: string;
+}
+
+interface ProxyPayloads {
+    Entries: Array<ProxyPayload>;
+}
 
 interface LiveRequest {
     body: any;
@@ -39,17 +54,44 @@ function convert(directory: string, outDirectory: string) {
     });
 }
 
+function requestBodyConversion(body: string, headers: any) {
+    if (CONTENT_TYPE_KEY in headers) {
+        let content: string = headers[CONTENT_TYPE_KEY];
+
+        if ( content.indexOf("application/json") > -1 )
+        {
+            return JSON.parse(body);
+        }
+    }
+
+    return body;
+}
+
 // async callbacks go
 // convert (directories) 
 //    -> each directory -> readFile -> processFile 
-//        -> each entry outputFile
+//        -> each generated entry outputFile
 
 function processFile(file: string, inputJson: any) {
     const filePrefix = file.substring(0, file.lastIndexOf("."));
 
-    inputJson.Entries.forEach((entry: any, idx: number) => {
+    inputJson.Entries.forEach((entry: ProxyPayload, idx: number) => {
         let outFile = filePrefix + idx + ".json";
-        outputFile(outFile, entry);
+        let newEntry: ValidationPayload = {
+            liveRequest: <LiveRequest>{},
+            liveResponse: <LiveResponse>{}
+        };
+
+        newEntry.liveRequest.url = entry.RequestUri;
+        newEntry.liveRequest.headers = entry.RequestHeaders;
+        newEntry.liveRequest.body = requestBodyConversion(entry.RequestBody, entry.RequestHeaders);
+        newEntry.liveRequest.method = entry.RequestMethod;
+        
+        newEntry.liveResponse.body = entry.ResponseBody;
+        newEntry.liveResponse.statusCode = entry.StatusCode.toString();
+        newEntry.liveResponse.headers = entry.ResponseHeaders;
+
+        outputFile(outFile, newEntry);
     });
 }
 
