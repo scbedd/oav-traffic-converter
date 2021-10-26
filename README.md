@@ -26,12 +26,6 @@ npm run build
 node ./build/cli.js convert --directory ./input-example/ --out ./output-example/
 ```
 
-Cleanup a sample run...
-
-```powershell
-Get-ChildItem .\output-example\ -Filter *.json | ? { !$_.Name.Contains("output-example.json") } | % { Remove-Item $_ }
-```
-
 Time a run...
 
 ```powershell
@@ -40,6 +34,12 @@ measure-command { node .\build\cli.js convert --directory C:/repo/scraps/convert
 
 ```sh
 time node ./build/cli.js convert --directory ./sample-input/ --out ./output-example/
+```
+
+Cleanup a sample run...
+
+```powershell
+Get-ChildItem .\output-example\ -Filter *.json | ? { !$_.Name.Contains("output-example.json") } | % { Remove-Item $_ }
 ```
 
 ## Learnings
@@ -93,11 +93,11 @@ Couple Specificities:
 
 The converter performed adequately enough to not put a huge wrench in the process if we want to run this live.
 
-| Benchmark | Time (on windows) | Generated Payloads |
-|---|---|---|
-| 1 file | Instant |   |
-| 536 files (python tables recorded tests) | ~1 second (900 ms to 1422ms) |   |
-| 1300 files (.NET blob recorded tests) |  | ~5 seconds (4000ms -> 5700ms)  |
+| Benchmark | Time (on windows) |
+|---|---|
+| 1 file | Instant |
+| 536 files (python tables recorded tests) | ~1 second (900ms to 1422ms) |
+| 1300 files (.NET blob recorded tests) | ~5 seconds (4000ms to 5700ms) |
 
 ### Discovered Issues
 
