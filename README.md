@@ -26,6 +26,22 @@ npm run build
 node ./build/cli.js convert --directory ./input-example/ --out ./output-example/
 ```
 
+Cleanup a sample run...
+
+```powershell
+Get-ChildItem .\output-example\ -Filter *.json | ? { !$_.Name.Contains("output-example.json") } | % { Remove-Item $_ }
+```
+
+Time a run...
+
+```powershell
+measure-command { node .\build\cli.js convert --directory C:/repo/scraps/converted_output/ --out ./output-example/ | out-host }
+```
+
+```sh
+time node ./build/cli.js convert --directory ./sample-input/ --out ./output-example/
+```
+
 ## Learnings
 
 The current output format of the test-proxy is fairly close to what oav requires.
@@ -83,7 +99,7 @@ The converter performed adequately enough to not put a huge wrench in the proces
 | 536 files (python tables recorded tests) | ~1 second (900 ms to 1422ms) |   |
 | 1300 files (.NET blob recorded tests) |  |   |
 
-Discovered Issues
+### Discovered Issues
 
-* Everything is a string, regardless of what the source type really is. EG: `StatusCode`.
-* Payload bodies seemingly must be in JSON. This converter actually handles this situation when there isn't a valid json body (it leaves it string). Otherwise, it attempts to convert to JSON payload to fulfill the requirements of the live validation format.
+* Tested agaist python `table` recordings. Completed without issue.
+* Tested against all `azure.storage.blobs` SessionRecordings, ran into a `too many open files` error, but was quite effective otherwise.

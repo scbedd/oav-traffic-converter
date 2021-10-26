@@ -79,25 +79,26 @@ function requestBodyConversion(body: string, headers: any) {
 
 function processFile(file: string, inputJson: any) {
     const filePrefix = file.substring(0, file.lastIndexOf("."));
+    if (inputJson.Entries !== undefined && inputJson.Entries.length > 0) {
+        inputJson.Entries.forEach((entry: ProxyPayload, idx: number) => {
+            let outFile = filePrefix + idx + ".json";
+            let newEntry: ValidationPayload = {
+                liveRequest: <LiveRequest>{},
+                liveResponse: <LiveResponse>{}
+            };
 
-    inputJson.Entries.forEach((entry: ProxyPayload, idx: number) => {
-        let outFile = filePrefix + idx + ".json";
-        let newEntry: ValidationPayload = {
-            liveRequest: <LiveRequest>{},
-            liveResponse: <LiveResponse>{}
-        };
+            newEntry.liveRequest.url = entry.RequestUri;
+            newEntry.liveRequest.headers = entry.RequestHeaders;
+            newEntry.liveRequest.body = requestBodyConversion(entry.RequestBody, entry.RequestHeaders);
+            newEntry.liveRequest.method = entry.RequestMethod;
 
-        newEntry.liveRequest.url = entry.RequestUri;
-        newEntry.liveRequest.headers = entry.RequestHeaders;
-        newEntry.liveRequest.body = requestBodyConversion(entry.RequestBody, entry.RequestHeaders);
-        newEntry.liveRequest.method = entry.RequestMethod;
-        
-        newEntry.liveResponse.body = entry.ResponseBody;
-        newEntry.liveResponse.statusCode = entry.StatusCode.toString();
-        newEntry.liveResponse.headers = entry.ResponseHeaders;
+            newEntry.liveResponse.body = entry.ResponseBody;
+            newEntry.liveResponse.statusCode = entry.StatusCode.toString();
+            newEntry.liveResponse.headers = entry.ResponseHeaders;
 
-        outputFile(outFile, newEntry);
-    });
+            outputFile(outFile, newEntry);
+        });
+    }
 }
 
 function readFile(file: string){
@@ -107,7 +108,17 @@ function readFile(file: string){
         if (err) {
             throw err;
         }
-        processFile(file, JSON.parse(data));
+        let convertedJson: any = {};
+
+        try {
+            convertedJson = JSON.parse(data.charCodeAt(0) === 0xFEFF ? data.slice(1) : data)
+        }
+        catch (ex: any){
+            console.log(input_location);
+            console.log(ex);
+            throw ex;
+        }
+        processFile(file, convertedJson);
     });
 }
 
