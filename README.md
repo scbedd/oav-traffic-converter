@@ -78,16 +78,16 @@ needs to convert to
     "headers": {}
   }
 }
-// ...multiplied by number of request/response entries in the original recording.
 ```
 
-Repeated for each `entry` in the `Entries` array in the input value.
+Repeated for each `entry` in the `Entries` array in the input value. This means that one `Proxy` recording can generate from 1 to N `ValidationPayload`s.
 
 Couple Specificities:
 
 1. oav expects the request body to be valid json. This is definitely not always the case, as some `javascript` libraries definitely fire text-based request bodies (versus json).
 2. There are no "integer" entries, everything is json even if it's valid to have a number.
-3. Ray Chen manually cleaned out the UTF8 encoded bodies. We are parsing as `utf8` before writing the files, so I think this problem is actually just taken care of for us.
+3. Ray Chen manually cleaned out the UTF8 encoded bodies. We are parsing as `utf8` before writing the files, so this is just naturally being taken care of by our converter.
+4. The `url` attribute MUST have an additional argument of `api-version=blah`.
 
 ## Recommendations going forward
 
@@ -101,7 +101,9 @@ The converter performed adequately enough to not put a huge wrench in the proces
 
 ### Discovered Issues
 
-* Tested agaist python `table` recordings. Completed without issue.
-* Tested against all `azure.storage.blobs` SessionRecordings, ran into a `too many open files` error, but was quite effective otherwise.
+This tool has been run against the python `tables` tests successfully.
 
-`Too many open files` is caused by the fact that we're just opening all the threads at once. Doable, but I gotta add some sort of batching.
+* Also tested against all `azure.storage.blobs` SessionRecordings, ran into a `too many open files` error, but was quite effective otherwise.
+* The request URLS _must_ have an API Version in them. This necessitates conversion of the recording until `oav` is patched.
+
+`Too many open files` is caused by the fact that we're just opening all the threads at once. We just gotta find an efficient way to batch without removing the performance characteristics of the current solution.
