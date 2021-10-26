@@ -85,7 +85,7 @@ Repeated for each `entry` in the `Entries` array in the input value. This means 
 Couple Specificities:
 
 1. oav expects the request body to be valid json. This is definitely not always the case, as some `javascript` libraries definitely fire text-based request bodies (versus json).
-2. There are no "integer" entries, everything is json even if it's valid to have a number.
+2. There are no "integer" entries, all primitives are string, even if it's valid to have a number value.
 3. Ray Chen manually cleaned out the UTF8 encoded bodies. We are parsing as `utf8` before writing the files, so this is just naturally being taken care of by our converter.
 4. The `url` attribute MUST have an additional argument of `api-version=blah`.
 
