@@ -103,3 +103,5 @@ The converter performed adequately enough to not put a huge wrench in the proces
 
 * Tested agaist python `table` recordings. Completed without issue.
 * Tested against all `azure.storage.blobs` SessionRecordings, ran into a `too many open files` error, but was quite effective otherwise.
+
+`Too many open files` is caused by the fact that we're just opening all the threads at once. Doable, but I gotta add some sort of batching.
