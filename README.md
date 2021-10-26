@@ -97,7 +97,7 @@ The converter performed adequately enough to not put a huge wrench in the proces
 |---|---|---|
 | 1 file | Instant |   |
 | 536 files (python tables recorded tests) | ~1 second (900 ms to 1422ms) |   |
-| 1300 files (.NET blob recorded tests) |  |   |
+| 1300 files (.NET blob recorded tests) |  | ~5 seconds (4000ms -> 5700ms)  |
 
 ### Discovered Issues
 
