@@ -1,10 +1,20 @@
+/*
+The only requirements actually necessary are native node types `fs` and `path`.
+
+`yargs` is only used for the CLI interface to make testing this easy.
+
+Order of execution:
+Get Directories -> convert()
+    foreach discovered file -> readFile() -> processFile()
+        fireach generated entry outputFile()
+*/
+
 import {Argv} from "yargs";
 import { ExceptionInfo } from "_debugger";
 const fs = require('fs');
 const path = require('path');
 
-var OperationCount: number = 0;
-var CompletionCount: number = 0;
+var FileCount: number = 0;
 var InputDirectory: string = "";
 var OutputDirectory: string = "";
 var CONTENT_TYPE_KEY: string = "Content-Type"
@@ -47,7 +57,7 @@ function convert(directory: string, outDirectory: string) {
     OutputDirectory = outDirectory;
 
     let files: Array<string> = fs.readdirSync(directory);
-    OperationCount = files.length;
+    FileCount = files.length;
 
     files.forEach((file: string) => {
         readFile(file);
@@ -66,11 +76,6 @@ function requestBodyConversion(body: string, headers: any) {
 
     return body;
 }
-
-// async callbacks go
-// convert (directories) 
-//    -> each directory -> readFile -> processFile 
-//        -> each generated entry outputFile
 
 function processFile(file: string, inputJson: any) {
     const filePrefix = file.substring(0, file.lastIndexOf("."));
@@ -114,8 +119,6 @@ function outputFile(file: string, outputJson: ValidationPayload){
         if (err) {
             throw err;
         }
-
-        CompletionCount += 1;
     });
 }
 
@@ -127,13 +130,9 @@ require('yargs')
         }).option('out', {
             alias: 'o',
             describe: "The targeted output directory."
-        }).option('verbose', {
-            alias: 'v',
-            default: false,
         })
     }, (args: any) => {
-        if (args.verbose) {
-            console.info("Starting the server...");
-        }
+        console.log(`Input Directory: ${args.directory}. Output Directory: ${args.directory}`)
         convert(args.directory, args.out);
+        console.log(`Operating on ${FileCount} files.`)
     }).argv;

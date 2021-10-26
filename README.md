@@ -77,13 +77,13 @@ Couple Specificities:
 
 The converter performed adequately enough to not put a huge wrench in the process if we want to run this live.
 
-| Benchmark | Time |
-|---|---|
-| 1 file |  |
-| 536 files (python tables recorded tests) |  |
-| 1300 files (.NET blob recorded tests) |  |
+| Benchmark | Time (on windows) | Generated Payloads |
+|---|---|---|
+| 1 file | Instant |   |
+| 536 files (python tables recorded tests) | ~1 second (900 ms to 1422ms) |   |
+| 1300 files (.NET blob recorded tests) |  |   |
 
 Discovered Issues
 
 * Everything is a string, regardless of what the source type really is. EG: `StatusCode`.
-* Payload bodies seemingly must be in JSON. The AZSDK has a lot more than just json payloads, so this is obviously something `scbedd` is missing.
+* Payload bodies seemingly must be in JSON. This converter actually handles this situation when there isn't a valid json body (it leaves it string). Otherwise, it attempts to convert to JSON payload to fulfill the requirements of the live validation format.
