@@ -16,10 +16,8 @@ All discussions WRT compatibility with [`oav` ](https://github.com/Azure/oav/) s
 
 ```node
 npm run build
-node ./build/cli.js convert --directory <input-dir> --out <output-dir> --api-version <api-version-string>
+node ./build/cli.js convert --directory <input-dir> --out <output-dir>
 ```
-
-The `api-version-string` is a stop gap, given that this will be a bit more complicated than a single value per test run. Our tests may actually exercise different api-versions intentionally. The real answer is to patch `oav` to pull the `api-version` from the header values.
 
 So for a local example...
 
@@ -99,7 +97,7 @@ Couple Specificities:
 1. oav expects the request body to be valid json. This is definitely not always the case, as some `javascript` libraries definitely fire text-based request bodies (versus json).
 2. There are no "integer" entries, all primitives are string, even if it's valid to have a number value.
 3. Ray Chen manually cleaned out the UTF8 encoded bodies. We are parsing as `utf8` before writing the files, so this is just naturally being taken care of by our converter.
-4. The `url` attribute MUST have an additional argument of `api-version=blah`.
+4. The `url` attribute MUST have an additional argument of `api-version=blah`. We will pull this from header value `x-ms-version`.
 
 ## Recommendations going forward
 
