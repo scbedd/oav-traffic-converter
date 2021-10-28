@@ -16,10 +16,19 @@ All discussions WRT compatibility with [`oav` ](https://github.com/Azure/oav/) s
 
 ```node
 npm run build
-node ./build/cli.js convert --directory <input-dir> --out <output-dir>
+node ./build/cli.js convert --directory <input-dir> --out <output-dir> --api-version <api-version-string>
 ```
 
+The `api-version-string` is a stop gap, given that this will be a bit more complicated than a single value per test run. Our tests may actually exercise different api-versions intentionally. The real answer is to patch `oav` to pull the `api-version` from the header values.
+
 So for a local example...
+
+```node
+npm run build
+node ./build/cli.js convert --directory ./input-example/ --out ./output-example/
+```
+
+Or for a much bigger sample, use the `tables storage tests` present in `sample-tables-input/`.
 
 ```node
 npm run build
@@ -29,18 +38,21 @@ node ./build/cli.js convert --directory ./input-example/ --out ./output-example/
 Time a run...
 
 ```powershell
-measure-command { node .\build\cli.js convert --directory C:/repo/scraps/converted_output/ --out ./output-example/ | out-host }
+# on windows
+measure-command { node .\build\cli.js convert --directory C:/repo/oav-traffic-converter/input-example/ --out ./output-example/ | out-host }
 ```
 
 ```sh
-time node ./build/cli.js convert --directory ./sample-input/ --out ./output-example/
+# on linux
+time node ./build/cli.js convert --directory ./input-example/ --out ./output-example/
 ```
 
 Cleanup a sample run...
 
 ```powershell
-Get-ChildItem .\output-example\ -Filter *.json | ? { !$_.Name.Contains("output-example.json") } | % { Remove-Item $_ }
+Get-ChildItem .\output-example\ -Filter *.json | ? { !$_.Name.Contains("output-example.json") -and !$_.Name.Contains("test_retry.pyTestStorageRetrytest_retry_on_server_error0.json") } | % { Remove-Item $_ }
 ```
+
 
 ## Learnings
 

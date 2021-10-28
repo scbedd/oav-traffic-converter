@@ -1,0 +1,58 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://yalltbtestsprim.table.cosmos.azure.com/Tables",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json;odata=minimalmetadata",
+        "Accept-Encoding": "gzip, deflate",
+        "Authorization": "Sanitized",
+        "Content-Length": "37",
+        "Content-Type": "application/json;odata=nometadata",
+        "DataServiceVersion": "3.0",
+        "Date": "Mon, 18 Oct 2021 23:01:40 GMT",
+        "User-Agent": "azsdk-python-data-tables/12.1.1 Python/3.9.2 (Windows-10-10.0.19041-SP0)",
+        "x-ms-client-request-id": "5abea764-3067-11ec-9a89-5cf37093a909",
+        "x-ms-date": "Mon, 18 Oct 2021 23:01:40 GMT",
+        "x-ms-version": "2019-02-02"
+      },
+      "RequestBody": "{\u0022TableName\u0022: \u0022pytableasyncc0bd3225\u0022}",
+      "StatusCode": 201,
+      "ResponseHeaders": {
+        "Content-Type": "application/json; odata=minimalmetadata",
+        "Date": "Mon, 18 Oct 2021 23:01:35 GMT",
+        "ETag": "W/\u0022datetime\u00272021-10-18T23%3A01%3A34.9339144Z\u0027\u0022",
+        "Location": "https://yalltbtestsprim.table.cosmos.azure.com/Tables(\u0027pytableasyncc0bd3225\u0027)",
+        "Transfer-Encoding": "chunked",
+        "x-ms-request-id": "cf5fe902-f212-4775-b8ee-8726ffa6513f"
+      },
+      "ResponseBody": {
+        "TableName": "pytableasyncc0bd3225",
+        "odata.metadata": "https://yalltbtestsprim.table.cosmos.azure.com/$metadata#Tables/@Element"
+      }
+    },
+    {
+      "RequestUri": "https://yalltbtestsprim.table.cosmos.azure.com/Tables(\u0027pytableasyncc0bd3225\u0027)",
+      "RequestMethod": "DELETE",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Accept-Encoding": "gzip, deflate",
+        "Authorization": "Sanitized",
+        "Content-Length": "0",
+        "Date": "Mon, 18 Oct 2021 23:01:41 GMT",
+        "User-Agent": "azsdk-python-data-tables/12.1.1 Python/3.9.2 (Windows-10-10.0.19041-SP0)",
+        "x-ms-client-request-id": "5b4bd022-3067-11ec-8fc7-5cf37093a909",
+        "x-ms-date": "Mon, 18 Oct 2021 23:01:41 GMT",
+        "x-ms-version": "2019-02-02"
+      },
+      "RequestBody": null,
+      "StatusCode": 204,
+      "ResponseHeaders": {
+        "Date": "Mon, 18 Oct 2021 23:01:35 GMT",
+        "x-ms-request-id": "945242f8-1e13-4621-bc61-a552fc8156de"
+      },
+      "ResponseBody": null
+    }
+  ],
+  "Variables": {}
+}

@@ -14,10 +14,13 @@ import { ExceptionInfo } from "_debugger";
 const fs = require('fs');
 const path = require('path');
 
+
+
 var FileCount: number = 0;
 var InputDirectory: string = "";
 var OutputDirectory: string = "";
 var CONTENT_TYPE_KEY: string = "Content-Type"
+var DEFAULT_API_VERSION: string = "2019-02-02"
 
 interface ProxyPayload {
     RequestUri: string;
@@ -51,7 +54,7 @@ interface ValidationPayload {
     liveResponse: LiveResponse;
 }
 
-function convert(directory: string, outDirectory: string) {
+function convert(directory: string, outDirectory: string, version: string) {
     console.info(`Converting files in folder ${directory} ${outDirectory}`);
     InputDirectory = directory;
     OutputDirectory = outDirectory;
@@ -60,7 +63,7 @@ function convert(directory: string, outDirectory: string) {
     FileCount = files.length;
 
     files.forEach((file: string) => {
-        readFile(file);
+        readFile(file, version);
     });
 }
 
@@ -76,8 +79,17 @@ function requestBodyConversion(body: string, headers: any) {
 
     return body;
 }
+function requestUriConversion(uri: string, version: string): string {
+    const parsedUrl = new URL(uri);
 
-function processFile(file: string, inputJson: any) {
+    if(!parsedUrl.searchParams.get('api-version')){
+        parsedUrl.searchParams.set('api-version', version)
+    }
+    
+    return parsedUrl.toString();
+}
+
+function processFile(file: string, inputJson: any, version: string) {
     const filePrefix = file.substring(0, file.lastIndexOf("."));
     if (inputJson.Entries !== undefined && inputJson.Entries.length > 0) {
         inputJson.Entries.forEach((entry: ProxyPayload, idx: number) => {
@@ -86,9 +98,12 @@ function processFile(file: string, inputJson: any) {
                 liveRequest: <LiveRequest>{},
                 liveResponse: <LiveResponse>{}
             };
-
-            newEntry.liveRequest.url = entry.RequestUri;
+            
+            // manipulate the request URI
+            newEntry.liveRequest.url = requestUriConversion(entry.RequestUri, version);
             newEntry.liveRequest.headers = entry.RequestHeaders;
+
+            // the request body is expected to be a JSON entry. Force that conversion if we can.
             newEntry.liveRequest.body = requestBodyConversion(entry.RequestBody, entry.RequestHeaders);
             newEntry.liveRequest.method = entry.RequestMethod;
 
@@ -101,7 +116,7 @@ function processFile(file: string, inputJson: any) {
     }
 }
 
-function readFile(file: string){
+function readFile(file: string, version: string){
     const input_location = path.join(InputDirectory, file);
 
     fs.readFile(input_location, 'utf8', (err: any, data: any) => {
@@ -118,7 +133,7 @@ function readFile(file: string){
             console.log(ex);
             throw ex;
         }
-        processFile(file, convertedJson);
+        processFile(file, convertedJson, version);
     });
 }
 
@@ -141,9 +156,13 @@ require('yargs')
         }).option('out', {
             alias: 'o',
             describe: "The targeted output directory."
+        }).option('api-version', {
+            alias: 'a',
+            default: DEFAULT_API_VERSION,
+            describe: `The api version expected to be used. Defaults to "${DEFAULT_API_VERSION}".`
         })
     }, (args: any) => {
         console.log(`Input Directory: ${args.directory}. Output Directory: ${args.directory}`)
-        convert(args.directory, args.out);
+        convert(args.directory, args.out, args.version);
         console.log(`Operating on ${FileCount} files.`)
     }).argv;
