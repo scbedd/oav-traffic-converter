@@ -32,7 +32,7 @@ Or for a much bigger sample, use the `tables storage tests` present in `sample-t
 
 ```node
 npm run build
-node ./build/cli.js convert --directory ./input-example/ --out ./output-example/
+node ./build/cli.js convert --directory ./sample-tables-input/ --out ./output-example/
 ```
 
 Time a run...

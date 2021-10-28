@@ -163,6 +163,6 @@ require('yargs')
         })
     }, (args: any) => {
         console.log(`Input Directory: ${args.directory}. Output Directory: ${args.directory}`)
-        convert(args.directory, args.out, args.version);
+        convert(args.directory, args.out, args.apiVersion);
         console.log(`Operating on ${FileCount} files.`)
     }).argv;

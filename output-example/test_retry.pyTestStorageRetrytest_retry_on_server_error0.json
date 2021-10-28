@@ -1,6 +1,6 @@
 {
     "liveRequest": {
-        "url": "https://fakeendpoint.table.core.windows.net/Tables",
+        "url": "https://fakeendpoint.table.core.windows.net/Tables?api-version=2019-02-02",
         "headers": {
             "Accept": "application/json;odata=minimalmetadata",
             "Accept-Encoding": "gzip, deflate",
